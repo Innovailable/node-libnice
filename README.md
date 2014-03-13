@@ -35,7 +35,7 @@ Streams are `EventEmitter`s. Register your callbacks
 	    // send credentials and candidates to remote client
 	});
 
-	stream.on('stateChanged', function(component, candidates) {
+	stream.on('stateChanged', function(component, state) {
 		// state is a string
 	}
 
@@ -44,7 +44,7 @@ Streams are `EventEmitter`s. Register your callbacks
 	});
 
 Please note that the first parameter on `stateChanged` and `receive` is the
-component.
+component id. Component ids are numbers starting from 1.
 
 To start the connection process tell the stream to gather candidates
 
