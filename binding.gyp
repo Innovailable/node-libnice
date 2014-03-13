@@ -7,7 +7,7 @@
 				"native/agent.cpp",
 				"native/stream.cpp",
 			],
-			"defines"[
+			"defines": [
 				'DO_DEBUG'
 			],
 			'cflags': [
