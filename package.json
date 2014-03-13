@@ -1,0 +1,14 @@
+{
+    "name": "libnice",
+    "description": "A thin wrapper around the ICE library libnice",
+    "author" : "Stephan Thamm <thammi@chaossource.net>",
+    "license": "AGPL-3.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/thammi/node-libnice.git"
+    },
+    "version": "0.1.0",
+    "dependencies": {
+    },
+    "main": "src/module"
+}
