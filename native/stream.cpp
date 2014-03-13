@@ -9,6 +9,33 @@ using namespace v8;
 
 v8::Persistent<v8::Function> Stream::constructor;
 
+// helper
+
+const char* state_to_string(int state_) {
+	// to get notified if we miss a state
+	const NiceComponentState state = (NiceComponentState) state_;
+
+	switch(state) {
+		case NICE_COMPONENT_STATE_DISCONNECTED:
+			return "disconnected";
+		case NICE_COMPONENT_STATE_GATHERING:
+			return "gathering";
+		case NICE_COMPONENT_STATE_CONNECTING:
+			return "connecting";
+		case NICE_COMPONENT_STATE_CONNECTED:
+			return "connected";
+		case NICE_COMPONENT_STATE_READY:
+			return "ready";
+		case NICE_COMPONENT_STATE_FAILED:
+			return "failed";
+		case NICE_COMPONENT_STATE_LAST:
+			// not really a state
+			break;
+	}
+
+	return "unknown";
+}
+
 // lifecycle
 
 void Stream::init(v8::Handle<v8::Object> exports) {
@@ -66,7 +93,7 @@ void Stream::stateChanged(int component, int state) {
 	Handle<Value> argv[argc] = {
 		String::New("stateChanged"),
 		Integer::New(component),
-		Integer::New(state),
+		String::New(state_to_string(state)),
 	};
 
 	node::MakeCallback(handle_, "emit", argc, argv);
