@@ -2,8 +2,7 @@
 
 ## What is this?
 
-This is a very thin node.js wrapper around
-[libnice](http://nice.freedesktop.org/).
+This is a thin node.js wrapper around [libnice](http://nice.freedesktop.org/).
 
 ## Setup
 
