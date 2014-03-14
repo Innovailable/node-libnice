@@ -156,6 +156,8 @@ v8::Handle<v8::Value> Stream::setRemoteCredentials(const v8::Arguments& args) {
 	v8::String::Utf8Value ufrag(args[0]->ToString());
 	v8::String::Utf8Value pwd(args[1]->ToString());
 
+	DEBUG("set remote credentials on stream " << stream_id << " to " << *ufrag << " " << *pwd);
+
 	nice_agent_set_remote_credentials(nice_agent, stream_id, *ufrag, *pwd);
 
 	return scope.Close(Undefined());
@@ -289,6 +291,8 @@ bool Stream::addRemoteIceCandidate(const char* sdp_) {
 	// sanitize
 
 	std::string sdp(sdp_);
+
+	DEBUG("adding candidate '" << trim(sdp) << "' to stream " << _stream_id);
 
 	size_t small_udp = sdp.find(" udp ");
 

@@ -15,4 +15,15 @@ extern std::mutex log_mutex;
 #define DEBUG(x)
 #endif
 
+static inline std::string trim(const std::string& str, const std::string& target=" \r\n\t") {
+	const size_t first = str.find_first_not_of(target);
+
+	if(first == std::string::npos) {
+		return std::string();
+	} else {
+		const size_t last = str.find_last_not_of(target);
+		return str.substr(first, last - first + 1);
+	}
+}
+
 #endif /* HELPER_H */
