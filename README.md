@@ -71,4 +71,5 @@ information.
 * more documentation
 * resolve host for stun servers
 * port missing libnice functions
+* get rid of the glib loop in its own thread
 

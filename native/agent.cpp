@@ -26,6 +26,10 @@ void Agent::init(v8::Handle<v8::Object> exports) {
 }
 
 Agent::Agent() {
+	DEBUG("agent created");
+
+	nice_debug_enable(true);
+
 	// initialize async worker
 
 	uv_async_init(uv_default_loop(), &_async, doWork);
@@ -55,13 +59,17 @@ Agent::Agent() {
 }
 
 Agent::~Agent() {
+	DEBUG("agent is dying");
+
+	uv_close((uv_handle_t*) &_async, NULL);
+
+	g_object_unref(_agent);
+	_agent = NULL;
+
 	g_main_loop_quit(_loop);
 	_thread.join();
 
-	if(_agent) {
-		g_object_unref(_agent);
-		_agent = NULL;
-	}
+	DEBUG("agent loop finished");
 }
 
 bool Agent::removeStream(int stream_id) {
