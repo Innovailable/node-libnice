@@ -8,7 +8,9 @@
 
 #ifdef DO_DEBUG
 #include <iostream>
-#define DEBUG(x) do { std::cerr << "[libnice] " << x << " (@" << AT() << ")" << std::endl; } while (0)
+#include <mutex>
+extern std::mutex log_mutex;
+#define DEBUG(x) do { std::lock_guard<std::mutex> guard(log_mutex); std::cerr << "[libnice] " << x << " (@" << AT() << ")" << std::endl; } while (0)
 #else
 #define DEBUG(x)
 #endif

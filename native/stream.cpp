@@ -60,7 +60,7 @@ void Stream::init(v8::Handle<v8::Object> exports) {
 
 Stream::Stream(Handle<Object> js_agent, int stream_id, int components)
 	: _js_agent(Persistent<Object>::New(js_agent)), _stream_id(stream_id), _components(components) {
-	DEBUG("stream " << stream_id << " with " << components << "components created");
+	DEBUG("stream " << stream_id << " with " << components << " components created");
 	Agent *agent = node::ObjectWrap::Unwrap<Agent>(js_agent);
 	_nice_agent = agent->agent();
 }

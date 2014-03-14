@@ -6,6 +6,7 @@
 				"native/module.cpp",
 				"native/agent.cpp",
 				"native/stream.cpp",
+				"native/helper.cpp",
 			],
 			"defines": [
 				'DO_DEBUG'
