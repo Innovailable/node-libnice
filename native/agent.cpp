@@ -28,7 +28,7 @@ void Agent::init(v8::Handle<v8::Object> exports) {
 Agent::Agent() {
 	DEBUG("agent created");
 
-	nice_debug_enable(true);
+	//nice_debug_enable(true);
 
 	// initialize async worker
 

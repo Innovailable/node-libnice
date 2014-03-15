@@ -106,6 +106,8 @@ void Stream::stateChanged(int component, int state) {
 void Stream::gatheringDone() {
 	HandleScope scope;
 
+	DEBUG("emitting callback");
+
 	const int argc = 2;
 	Handle<Value> argv[argc] = {
 		String::New("gatheringDone"),
@@ -305,10 +307,12 @@ bool Stream::addRemoteIceCandidate(const char* sdp_) {
 	auto nice_candidate = nice_agent_parse_remote_candidate_sdp(_nice_agent, _stream_id, sdp.c_str());
 
 	if(nice_candidate == NULL) {
+		DEBUG("was unable to parse the candidate");
 		return false;
 	}
 
 	if(nice_candidate->component_id > _components) {
+		DEBUG("component was invalid");
 		return false;
 	}
 
