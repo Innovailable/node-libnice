@@ -36,6 +36,7 @@ class Agent : public node::ObjectWrap {
 		static v8::Handle<v8::Value> createStream(const v8::Arguments& args);
 		static v8::Handle<v8::Value> setStunServer(const v8::Arguments& args);
 		static v8::Handle<v8::Value> setSoftware(const v8::Arguments& args);
+		static v8::Handle<v8::Value> setControlling(const v8::Arguments& args);
 		static v8::Handle<v8::Value> restart(const v8::Arguments& args);
 
 		static v8::Persistent<v8::Function> constructor;

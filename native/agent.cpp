@@ -19,6 +19,7 @@ void Agent::init(v8::Handle<v8::Object> exports) {
 	NODE_SET_PROTOTYPE_METHOD(tpl, "createStream", createStream);
 	NODE_SET_PROTOTYPE_METHOD(tpl, "setStunServer", setStunServer);
 	NODE_SET_PROTOTYPE_METHOD(tpl, "setSoftware", setSoftware);
+	NODE_SET_PROTOTYPE_METHOD(tpl, "setControlling", setControlling);
 	NODE_SET_PROTOTYPE_METHOD(tpl, "resetart", restart);
 	constructor = Persistent<Function>::New(tpl->GetFunction());
 	// export
@@ -207,6 +208,21 @@ v8::Handle<v8::Value> Agent::setSoftware(const v8::Arguments& args) {
 	v8::String::Utf8Value software(args[0]->ToString());
 
 	nice_agent_set_software(nice_agent, *software);
+
+	return scope.Close(Undefined());
+}
+
+v8::Handle<v8::Value> Agent::setControlling(const v8::Arguments& args) {
+	HandleScope scope;
+
+	NiceAgent *nice_agent = node::ObjectWrap::Unwrap<Agent>(args.This()->ToObject())->agent();
+
+	bool controlling = args[0]->BooleanValue();
+
+	GValue g_controlling = G_VALUE_INIT;
+	g_value_init(&g_controlling, G_TYPE_BOOLEAN);
+	g_value_set_boolean(&g_controlling, controlling);
+	g_object_set_property(G_OBJECT(nice_agent), "controlling-mode", &g_controlling);
 
 	return scope.Close(Undefined());
 }
