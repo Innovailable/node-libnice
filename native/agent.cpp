@@ -37,10 +37,6 @@ static NiceCompatibility getCompatibility(const std::string& id) {
 			"oc2007r2",
 			NICE_COMPATIBILITY_OC2007R2,
 		},
-		{
-			"DRAFT19",
-			NICE_COMPATIBILITY_DRAFT19,
-		},
 	};
 
 	std::string lowerId = id;
