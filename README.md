@@ -7,7 +7,7 @@ It provides
 [ICE](http://en.wikipedia.org/wiki/Interactive_Connectivity_Establishment)
 (Interactive Connectivity Establishment) support, which is a protocol for NAT
 traversal. ICE is primarily used in peer-to-peer applications like VoIP, video
-conferences, and instant messaging. It is part in SIP and WebRTC.
+conferences, and instant messaging. It is part of SIP and WebRTC.
 
 ## Setup
 
