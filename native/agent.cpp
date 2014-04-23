@@ -12,7 +12,7 @@ using namespace v8;
 v8::Persistent<v8::Function> Agent::constructor;
 
 static NiceCompatibility getCompatibility(const std::string& id) {
-	std::map<std::string, NiceCompatibility> compats = {
+	static std::map<std::string, NiceCompatibility> compats = {
 		{
 			"rfc5245",
 			NICE_COMPATIBILITY_RFC5245,
