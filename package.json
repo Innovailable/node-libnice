@@ -10,5 +10,6 @@
     "version": "0.1.2",
     "dependencies": {
     },
-    "main": "src/module"
+    "main": "src/module",
+    "keywords": [ "ice", "nat", "sip", "webrtc", "p2p" ]
 }
