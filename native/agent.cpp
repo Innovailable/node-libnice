@@ -274,7 +274,7 @@ void Agent::receive(NiceAgent* nice_agent, guint stream_id, guint component_id, 
 		auto it = agent->_streams.find(stream_id);
 
 		if(it != agent->_streams.end()) {
-			it->second->receive(component_id, buf, len);
+			it->second->receive(component_id, tmp_buf, len);
 		} else {
 			DEBUG("receiving on unknown stream");
 		}
