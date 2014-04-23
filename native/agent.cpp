@@ -77,8 +77,9 @@ Agent::Agent(NiceCompatibility compat) {
 
 	// initialize async worker
 
-	uv_async_init(uv_default_loop(), &_async, doWork);
-	_async.data = this;
+	_async = (uv_async_t *) malloc(sizeof(*_async));
+	uv_async_init(uv_default_loop(), _async, doWork);
+	_async->data = this;
 
 	// create glib stuff and agent
 
@@ -106,15 +107,13 @@ Agent::Agent(NiceCompatibility compat) {
 Agent::~Agent() {
 	DEBUG("agent is dying");
 
-	uv_close((uv_handle_t*) &_async, NULL);
+	g_main_loop_quit(_loop);
+	_thread.join();
 
 	g_object_unref(_agent);
 	_agent = NULL;
 
-	g_main_loop_quit(_loop);
-	_thread.join();
-
-	DEBUG("agent loop finished");
+	uv_close((uv_handle_t*) _async, (uv_close_cb) free);
 }
 
 bool Agent::removeStream(int stream_id) {
@@ -129,7 +128,7 @@ void Agent::addWork(const work_fun& fun) {
 
 	_work_queue.push_back(fun);
 
-	uv_async_send(&_async);
+	uv_async_send(_async);
 }
 
 void Agent::doWork(uv_async_t *async, int status) {

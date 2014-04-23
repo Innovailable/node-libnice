@@ -69,7 +69,7 @@ class Agent : public node::ObjectWrap {
 
 		std::mutex _work_mutex;
 		work_queue _work_queue;
-		uv_async_t _async;
+		uv_async_t *_async;
 };
 
 #endif /* AGENT_H */
