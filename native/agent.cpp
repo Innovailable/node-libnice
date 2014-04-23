@@ -3,12 +3,58 @@
 #include <string.h>
 #include <memory>
 #include <vector>
+#include <algorithm>
 
 #include "helper.h"
 
 using namespace v8;
 
 v8::Persistent<v8::Function> Agent::constructor;
+
+static NiceCompatibility getCompatibility(const std::string& id) {
+	std::map<std::string, NiceCompatibility> compats = {
+		{
+			"rfc5245",
+			NICE_COMPATIBILITY_RFC5245,
+		},
+		{
+			"google",
+			NICE_COMPATIBILITY_GOOGLE,
+		},
+		{
+			"msn",
+			NICE_COMPATIBILITY_MSN,
+		},
+		{
+			"wlm2009",
+			NICE_COMPATIBILITY_WLM2009,
+		},
+		{
+			"oc2007",
+			NICE_COMPATIBILITY_OC2007,
+		},
+		{
+			"oc2007r2",
+			NICE_COMPATIBILITY_OC2007R2,
+		},
+		{
+			"DRAFT19",
+			NICE_COMPATIBILITY_DRAFT19,
+		},
+	};
+
+	std::string lowerId = id;
+	std::transform(lowerId.begin(), lowerId.end(), lowerId.begin(), tolower);
+
+	auto it = compats.find(lowerId);
+
+	if(it != compats.end()) {
+		return it->second;
+	} else {
+		DEBUG("unknown compatibility '" << id << "' requested");
+		return NICE_COMPATIBILITY_RFC5245;
+	}
+}
 
 // lifecycle stuff
 
@@ -28,7 +74,7 @@ void Agent::init(v8::Handle<v8::Object> exports) {
 	exports->Set(String::NewSymbol("NiceAgent"), constructor);
 }
 
-Agent::Agent() {
+Agent::Agent(NiceCompatibility compat) {
 	DEBUG("agent created");
 
 	//nice_debug_enable(true);
@@ -42,7 +88,7 @@ Agent::Agent() {
 
 	auto context = g_main_context_new();
 	_loop = g_main_loop_new(context, FALSE);
-	_agent = nice_agent_new(context, NICE_COMPATIBILITY_RFC5245);
+	_agent = nice_agent_new(context, compat);
 
 	// register callbacks
 
@@ -110,7 +156,14 @@ v8::Handle<v8::Value> Agent::New(const v8::Arguments& args) {
 
 	if (args.IsConstructCall()) {
 		// Invoked as constructor: `new MyObject(...)`
-		Agent* obj = new Agent();
+		NiceCompatibility compat = NICE_COMPATIBILITY_RFC5245;
+
+		if(!args[1]->IsUndefined()) {
+			v8::String::Utf8Value id(args[1]->ToString());
+			compat = getCompatibility(*id);
+		}
+
+		Agent* obj = new Agent(compat);
 		obj->Wrap(args.This());
 
 		if(!args[0]->IsUndefined()) {

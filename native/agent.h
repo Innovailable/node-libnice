@@ -20,7 +20,7 @@ typedef std::deque<work_fun> work_queue;
 
 class Agent : public node::ObjectWrap {
 	public:
-		Agent();
+		Agent(NiceCompatibility compat);
 		~Agent();
 
 		static void init(v8::Handle<v8::Object> exports);
