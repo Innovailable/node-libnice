@@ -180,6 +180,8 @@ v8::Handle<v8::Value> Stream::getLocalCredentials(const v8::Arguments& args) {
 	res->Set(String::New("ufrag"), String::New(ufrag));
 	res->Set(String::New("pwd"), String::New(pwd));
 
+	DEBUG("local credentials are '" << ufrag << "' and '" << pwd << "'");
+
 	g_free(ufrag);
 	g_free(pwd);
 
@@ -225,6 +227,8 @@ v8::Handle<v8::Value> Stream::send(const v8::Arguments& args) {
 
 	size_t size = node::Buffer::Length(buffer);
 	char* buf = node::Buffer::Data(buffer);
+
+	DEBUG("sending " << size << " bytes");
 
 	nice_agent_send(nice_agent, stream_id, component, size, buf);
 
