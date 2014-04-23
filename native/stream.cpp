@@ -143,9 +143,9 @@ v8::Handle<v8::Value> Stream::gatherCandidates(const v8::Arguments& args) {
 	NiceAgent *nice_agent = stream->_nice_agent;
 	int stream_id = stream->_stream_id;
 
-	nice_agent_gather_candidates(nice_agent, stream_id);
+	bool res = nice_agent_gather_candidates(nice_agent, stream_id);
 
-	return scope.Close(Undefined());
+	return scope.Close(Boolean::New(res));
 }
 
 v8::Handle<v8::Value> Stream::setRemoteCredentials(const v8::Arguments& args) {
@@ -160,9 +160,9 @@ v8::Handle<v8::Value> Stream::setRemoteCredentials(const v8::Arguments& args) {
 
 	DEBUG("set remote credentials on stream " << stream_id << " to " << *ufrag << " " << *pwd);
 
-	nice_agent_set_remote_credentials(nice_agent, stream_id, *ufrag, *pwd);
+	bool res = nice_agent_set_remote_credentials(nice_agent, stream_id, *ufrag, *pwd);
 
-	return scope.Close(Undefined());
+	return scope.Close(Boolean::New(res));
 }
 
 v8::Handle<v8::Value> Stream::getLocalCredentials(const v8::Arguments& args) {
@@ -230,9 +230,9 @@ v8::Handle<v8::Value> Stream::send(const v8::Arguments& args) {
 
 	DEBUG("sending " << size << " bytes");
 
-	nice_agent_send(nice_agent, stream_id, component, size, buf);
+	int ret = nice_agent_send(nice_agent, stream_id, component, size, buf);
 
-	return scope.Close(Undefined());
+	return scope.Close(Integer::New(ret));
 }
 
 v8::Handle<v8::Value> Stream::setTos(const v8::Arguments& args) {
@@ -256,9 +256,9 @@ v8::Handle<v8::Value> Stream::close(const v8::Arguments& args) {
 	Agent *agent = node::ObjectWrap::Unwrap<Agent>(stream->_js_agent);
 	int stream_id = stream->_stream_id;
 
-	agent->removeStream(stream_id);
+	bool res = agent->removeStream(stream_id);
 
-	return scope.Close(Undefined());
+	return scope.Close(Boolean::New(res));
 }
 
 // helpers
