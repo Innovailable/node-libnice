@@ -1,6 +1,8 @@
 #include "agent.h"
 
 #include <string.h>
+#include <memory>
+#include <vector>
 
 #include "helper.h"
 
@@ -267,19 +269,17 @@ void Agent::receive(NiceAgent* nice_agent, guint stream_id, guint component_id, 
 	DEBUG("receiving " << len << " bytes on component " << component_id << " of stream " << stream_id);
 
 	// TODO: this might not be the best solution ...
-	char *tmp_buf = (char*) malloc(len);
-	memcpy(tmp_buf, buf, len);
+	auto tmp_buf = std::make_shared<std::vector<char>>(len);
+	memcpy(tmp_buf->data(), buf, len);
 
 	agent->addWork([=]() {
 		auto it = agent->_streams.find(stream_id);
 
 		if(it != agent->_streams.end()) {
-			it->second->receive(component_id, tmp_buf, len);
+			it->second->receive(component_id, tmp_buf->data(), len);
 		} else {
 			DEBUG("receiving on unknown stream");
 		}
-
-		free(tmp_buf);
 	});
 }
 
