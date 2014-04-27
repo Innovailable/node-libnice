@@ -153,17 +153,13 @@ v8::Handle<v8::Value> Agent::New(const v8::Arguments& args) {
 		// Invoked as constructor: `new MyObject(...)`
 		NiceCompatibility compat = NICE_COMPATIBILITY_RFC5245;
 
-		if(!args[1]->IsUndefined()) {
-			v8::String::Utf8Value id(args[1]->ToString());
+		if(!args[0]->IsUndefined()) {
+			v8::String::Utf8Value id(args[0]->ToString());
 			compat = getCompatibility(*id);
 		}
 
 		Agent* obj = new Agent(compat);
 		obj->Wrap(args.This());
-
-		if(!args[0]->IsUndefined()) {
-			setStunServer(args);
-		}
 
 		return args.This();
 	} else {

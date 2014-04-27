@@ -24,7 +24,8 @@ Then install this library with
 
 First you have to create an agent which can create streams
 
-	var agent = new require("libnice").NiceAgent("132.177.123.6");
+	var agent = new require("libnice").NiceAgent();
+	agent.setStunServer("132.177.123.6");
 
 An important concept in libnice are components. A stream can consist of
 multiple components which are something like channels. Each component can send
