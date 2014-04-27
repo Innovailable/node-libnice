@@ -9,7 +9,7 @@
 				"native/helper.cpp",
 			],
 			"defines": [
-				'DO_DEBUG'
+				#'DO_DEBUG'
 			],
 			'cflags': [
 				'-std=c++11',
