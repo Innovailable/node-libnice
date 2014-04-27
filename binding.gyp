@@ -12,7 +12,7 @@
 				#'DO_DEBUG'
 			],
 			'cflags': [
-				'-std=c++11',
+				'-std=c++0x',
 				'<!@(pkg-config --cflags nice glib-2.0)',
 				'-Wall',
 				'-g',
