@@ -220,7 +220,7 @@ v8::Handle<v8::Value> Stream::send(const v8::Arguments& args) {
 	int component = args[0]->IntegerValue();
 
 	if(!node::Buffer::HasInstance(args[1])) {
-		ThrowException(Exception::TypeError(String::New("Expected buffer")));
+		return ThrowException(Exception::TypeError(String::New("Expected buffer")));
 	}
 
 	Local<Object> buffer = args[1]->ToObject();
