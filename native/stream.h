@@ -1,6 +1,7 @@
 #ifndef STREAM_H
 #define STREAM_H 
 
+#include <set>
 #include <node.h>
 #include <v8.h>
 #include <nice/nice.h>
@@ -46,6 +47,8 @@ class Stream : public node::ObjectWrap {
 		v8::Handle<v8::Value> getLocalIceCandidates();
 		bool addRemoteIceCandidate(const char* sdp);
 
+		static void weakDeathCheck(v8::Persistent<v8::Value> handle, void *data);
+
 		// the agent
 
 		v8::Persistent<v8::Object> _js_agent;
@@ -55,6 +58,10 @@ class Stream : public node::ObjectWrap {
 
 		int _stream_id;
 		int _components;
+
+		// stay alive
+		v8::Persistent<v8::Object> _self;
+		std::set<int> _working;
 };
 
 #endif /* STREAM_H */

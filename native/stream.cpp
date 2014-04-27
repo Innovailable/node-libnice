@@ -59,10 +59,11 @@ void Stream::init(v8::Handle<v8::Object> exports) {
 }
 
 Stream::Stream(Handle<Object> js_agent, int stream_id, int components)
-	: _js_agent(Persistent<Object>::New(js_agent)), _stream_id(stream_id), _components(components) {
+	: _js_agent(Persistent<Object>::New(js_agent)), _stream_id(stream_id), _components(components), _self(Persistent<Object>::New(handle_)) {
 	DEBUG("stream " << stream_id << " with " << components << " components created");
 	Agent *agent = node::ObjectWrap::Unwrap<Agent>(js_agent);
 	_nice_agent = agent->agent();
+	_self.MakeWeak(this, weakDeathCheck);
 }
 
 Stream::~Stream() {
@@ -92,6 +93,10 @@ void Stream::receive(int component, const char* buf, size_t size) {
 
 void Stream::stateChanged(int component, int state) {
 	HandleScope scope;
+
+	if(state == NICE_COMPONENT_STATE_DISCONNECTED || state == NICE_COMPONENT_STATE_FAILED) {
+		_working.erase(component);
+	}
 
 	const int argc = 3;
 	Handle<Value> argv[argc] = {
@@ -142,6 +147,10 @@ v8::Handle<v8::Value> Stream::gatherCandidates(const v8::Arguments& args) {
 	Stream *stream = node::ObjectWrap::Unwrap<Stream>(args.This()->ToObject());
 	NiceAgent *nice_agent = stream->_nice_agent;
 	int stream_id = stream->_stream_id;
+
+	for(int i = 1; i <= stream->_components; ++i) {
+		stream->_working.insert(i);
+	}
 
 	bool res = nice_agent_gather_candidates(nice_agent, stream_id);
 
@@ -331,5 +340,17 @@ bool Stream::addRemoteIceCandidate(const char* sdp_) {
 	g_slist_free(candidates);
 
 	return true;
+}
+
+void Stream::weakDeathCheck(Persistent<Value> handle, void *data) {
+	Stream *stream = (Stream *) data;
+
+	if(stream->_working.size()) {
+		DEBUG("weak pointer revived");
+		handle.MakeWeak(stream, weakDeathCheck);
+	} else {
+		DEBUG("weak pointer disposed");
+		handle.Dispose();
+	}
 }
 
