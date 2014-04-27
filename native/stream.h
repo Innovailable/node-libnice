@@ -47,7 +47,7 @@ class Stream : public node::ObjectWrap {
 		v8::Handle<v8::Value> getLocalIceCandidates();
 		bool addRemoteIceCandidate(const char* sdp);
 
-		static void weakDeathCheck(v8::Persistent<v8::Value> handle, void *data);
+		void checkIndependence();
 
 		// the agent
 

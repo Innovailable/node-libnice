@@ -59,11 +59,10 @@ void Stream::init(v8::Handle<v8::Object> exports) {
 }
 
 Stream::Stream(Handle<Object> js_agent, int stream_id, int components)
-	: _js_agent(Persistent<Object>::New(js_agent)), _stream_id(stream_id), _components(components), _self(Persistent<Object>::New(handle_)) {
+	: _js_agent(Persistent<Object>::New(js_agent)), _stream_id(stream_id), _components(components) {
 	DEBUG("stream " << stream_id << " with " << components << " components created");
 	Agent *agent = node::ObjectWrap::Unwrap<Agent>(js_agent);
 	_nice_agent = agent->agent();
-	_self.MakeWeak(this, weakDeathCheck);
 }
 
 Stream::~Stream() {
@@ -97,6 +96,8 @@ void Stream::stateChanged(int component, int state) {
 	if(state == NICE_COMPONENT_STATE_DISCONNECTED || state == NICE_COMPONENT_STATE_FAILED) {
 		_working.erase(component);
 	}
+
+	checkIndependence();
 
 	const int argc = 3;
 	Handle<Value> argv[argc] = {
@@ -151,6 +152,8 @@ v8::Handle<v8::Value> Stream::gatherCandidates(const v8::Arguments& args) {
 	for(int i = 1; i <= stream->_components; ++i) {
 		stream->_working.insert(i);
 	}
+
+	stream->checkIndependence();
 
 	bool res = nice_agent_gather_candidates(nice_agent, stream_id);
 
@@ -267,6 +270,11 @@ v8::Handle<v8::Value> Stream::close(const v8::Arguments& args) {
 
 	bool res = agent->removeStream(stream_id);
 
+	stream->_working.clear();
+	stream->checkIndependence();
+
+	DEBUG("closing stream " << stream->_stream_id);
+
 	return scope.Close(Boolean::New(res));
 }
 
@@ -342,15 +350,18 @@ bool Stream::addRemoteIceCandidate(const char* sdp_) {
 	return true;
 }
 
-void Stream::weakDeathCheck(Persistent<Value> handle, void *data) {
-	Stream *stream = (Stream *) data;
-
-	if(stream->_working.size()) {
-		DEBUG("weak pointer revived");
-		handle.MakeWeak(stream, weakDeathCheck);
+void Stream::checkIndependence() {
+	if(_working.size() > 0) {
+		if(_self.IsEmpty()) {
+			DEBUG("stream " << _stream_id << " got independent because it has work to do");
+			_self = Persistent<Object>::New(handle_);
+		}
 	} else {
-		DEBUG("weak pointer disposed");
-		handle.Dispose();
+		if(!_self.IsEmpty()) {
+			DEBUG("stream " << _stream_id << " lost its independence");
+			_self.Dispose();
+			_self = Persistent<Object>();
+		}
 	}
 }
 
