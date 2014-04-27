@@ -1,6 +1,8 @@
 #ifndef HELPER_H
 #define HELPER_H 
 
+#include <string>
+
 #define STRINGIFY(x)	#x
 #define TOSTRING(x)	STRINGIFY(x)
 
