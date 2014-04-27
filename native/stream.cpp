@@ -112,8 +112,6 @@ void Stream::stateChanged(int component, int state) {
 void Stream::gatheringDone() {
 	HandleScope scope;
 
-	DEBUG("emitting callback");
-
 	const int argc = 2;
 	Handle<Value> argv[argc] = {
 		String::New("gatheringDone"),
@@ -240,7 +238,7 @@ v8::Handle<v8::Value> Stream::send(const v8::Arguments& args) {
 	size_t size = node::Buffer::Length(buffer);
 	char* buf = node::Buffer::Data(buffer);
 
-	DEBUG("sending " << size << " bytes");
+	//DEBUG("sending " << size << " bytes");
 
 	int ret = nice_agent_send(nice_agent, stream_id, component, size, buf);
 

@@ -136,7 +136,7 @@ void Agent::doWork(uv_async_t *async, int status) {
 
 	std::lock_guard<std::mutex> guard(agent->_work_mutex);
 
-	DEBUG("doing work");
+	//DEBUG("doing work");
 
 	while(agent->_work_queue.size()) {
 		agent->_work_queue.front()();
@@ -310,7 +310,7 @@ void Agent::stateChanged(NiceAgent *nice_agent, guint stream_id, guint component
 void Agent::receive(NiceAgent* nice_agent, guint stream_id, guint component_id, guint len, gchar* buf, gpointer user_data) {
 	Agent *agent = reinterpret_cast<Agent*>(user_data);
 
-	DEBUG("receiving " << len << " bytes on component " << component_id << " of stream " << stream_id);
+	//DEBUG("receiving " << len << " bytes on component " << component_id << " of stream " << stream_id);
 
 	// TODO: this might not be the best solution ...
 	auto tmp_buf = std::make_shared<std::vector<char>>(len);
