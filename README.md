@@ -11,8 +11,8 @@ conferences, and instant messaging. It is part of SIP and WebRTC.
 
 ## Setup
 
-First you have to make sure that you have libnice and its headers installed. On
-Debian/Ubuntu/... run
+You have to make sure that you have libnice >=1.4 and its headers are
+installed. On Debian/Ubuntu/... run
 
 	apt-get install libnice-dev
 
